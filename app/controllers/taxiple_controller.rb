@@ -1,6 +1,6 @@
 class TaxipleController < ApplicationController
  
-  before_action :authenticate_user!, except: [:index, :intro, :menual, :room_page] #로그인한 유저만 등록 가능하게함.
+  before_action :authenticate_user!, except: [:index, :intro, :room_page, :menual] #로그인한 유저만 등록 가능하게함.
   def index
   end
 
@@ -8,8 +8,6 @@ class TaxipleController < ApplicationController
   end
   
   def room_page
-   
-    
   end
   
   def menual
@@ -79,23 +77,25 @@ class TaxipleController < ApplicationController
         mkroom.num_of_user_join += 1
       end
       mkroom.save
+      if mkroom.finish == false
+        List.where(mk_room_id: params[:room_num].to_i).each do |list| #person_# 중에 빈곳에 저장하기 위해
+          if list.person_2.nil? #person_2안에 값이 비었냐
+            list.person_2 = current_user.email
+            list.save
+          elsif list.person_2 != current_user && list.person_3.nil? #person_2에 값이 현재 유저가 아니냐 && person_3이 비었냐
+            list.person_3 = current_user.email
+            list.save
+          elsif list.person_3 != current_user && list.person_4.nil? #person_3에 값이 현재 유저냐 && person_4가 비었냐
+            list.person_4 = current_user.email
+            list.save
+          end
+        end
+      end
     end
-    List.where(mk_room_id: params[:room_num].to_i).each do |list| #person_# 중에 빈곳에 저장하기 위해
-      if list.person_2.nil? #person_2안에 값이 비었냐
-        list.person_2 = current_user.email
-        list.save
-      elsif list.person_2 != current_user && list.person_3.nil? #person_2에 값이 현재 유저가 아니냐 && person_3이 비었냐
-        list.person_3 = current_user.email
-        list.save
-      elsif list.person_3 != current_user && list.person_4.nil? #person_3에 값이 현재 유저냐 && person_4가 비었냐
-        list.person_4 = current_user.email
-        list.save
-      end
-      User.where(id: current_user.id).each do |user|
-        user.list_id = params[:room_num]
-        user.register_to_use = true
-        user.save
-      end
+    User.where(id: current_user.id).each do |user|
+      user.list_id = params[:room_num]
+      user.register_to_use = true
+      user.save
     end
     redirect_to "/taxiple/page4"
   end
@@ -109,9 +109,21 @@ class TaxipleController < ApplicationController
       user.register_to_use = false
       user.save
     end
-    
+
     List.where(mk_room_id: params[:mk_room_num]).each do |list|## @num은 MkRoom의 id를 가져오기 위함
       list.destroy
+      User.where(email: person_2).each do |x|
+        x.register_to_use = false
+        x.save
+      end
+      User.where(email: person_2).each do |x|
+        x.register_to_use = false
+        x.save
+      end
+      User.where(email: person_2).each do |x|
+        x.register_to_use = false
+        x.save
+      end
     end
     redirect_to "/taxiple/page4"
   end
