@@ -1,5 +1,9 @@
 Rails.application.configure do
   
+  config.action_mailer.default_url_options = { :host => 'taxiple-seunghyum-1.c9.io' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {:address => "퍼블릭 IP넣기", :port => 1025}
+    
   #mailgun 사전작업
   config.action_mailer.delivery_method = :mailgun
   config.action_mailer.mailgun_settings = {
