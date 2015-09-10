@@ -67,6 +67,7 @@ class TaxipleController < ApplicationController
         @p = list.mk_room_id
       end
     end
+    render layout: "materialize"
   end
   
   def join    
