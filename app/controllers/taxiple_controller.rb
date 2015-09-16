@@ -163,4 +163,8 @@ class TaxipleController < ApplicationController
     
     redirect_to "/taxiple/page4"
   end
+  
+  def calculator
+    
+  end
 end
